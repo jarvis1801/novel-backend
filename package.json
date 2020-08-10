@@ -1,0 +1,27 @@
+{
+    "name": "novel-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "set NODE_ENV=dev&& nodemon server.js",
+        "start": "set NODE_ENV=production&& nodemon server.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "async": "^2.6.1",
+        "body-parser": "^1.18.3",
+        "express": "^4.16.4",
+        "fs": "0.0.1-security",
+        "ipware": "^2.0.0",
+        "moment": "^2.23.0",
+        "moment-timezone": "^0.5.23",
+        "mongoose": "^5.3.15",
+        "multer": "^1.4.2",
+        "node-restful": "^0.2.6",
+        "nodemon": "^1.18.7",
+        "path": "^0.12.7"
+    }
+}
