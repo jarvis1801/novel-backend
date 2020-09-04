@@ -6,6 +6,7 @@ const ChapterSchema = mongoose.Schema({
     paragraph: [{
         data: { type: String, default: "" },
         type: { type: String, default: "content" },
+        media: { type: mongoose.Schema.Types.ObjectId, ref: 'Media', required: false },
         _id: false
     }],
     index: { type: Number, required: true },

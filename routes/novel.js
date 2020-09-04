@@ -47,17 +47,21 @@ router.post('/api/novel', upload.fields([{ name: 'thumbnailMain', maxCount: 1 },
     bodyObj.createdAt = moment().format()
     bodyObj.updatedAt = moment().format()
 
-    if (!_.isNull(files['thumbnailMain'][0])) {
-        const thumbnailMainBase64 = base64ToString(bufferToBase64(files['thumbnailMain'][0].buffer))
-        if (_.size(thumbnailMainBase64) > 0) {
-            _.set(bodyObj, 'thumbnailMain', thumbnailMainBase64)
+    if (_.size(files['thumbnailMain']) > 0) {
+        if (!_.isNull(files['thumbnailMain'][0])) {
+            const thumbnailMainBase64 = base64ToString(bufferToBase64(files['thumbnailMain'][0].buffer))
+            if (_.size(thumbnailMainBase64) > 0) {
+                _.set(bodyObj, 'thumbnailMain', thumbnailMainBase64)
+            }
         }
     }
 
-    if (!_.isNull(files['thumbnailMain'][0])) {
-        const thumbnailSectionBase64 = base64ToString(bufferToBase64(files['thumbnailSection'][0].buffer))
-        if (_.size(thumbnailSectionBase64) > 0) {
-            _.set(bodyObj, 'thumbnailSection', thumbnailSectionBase64)
+    if (_.size(files['thumbnailSection']) > 0) {
+        if (!_.isNull(files['thumbnailSection'][0])) {
+            const thumbnailSectionBase64 = base64ToString(bufferToBase64(files['thumbnailSection'][0].buffer))
+            if (_.size(thumbnailSectionBase64) > 0) {
+                _.set(bodyObj, 'thumbnailSection', thumbnailSectionBase64)
+            }
         }
     }
 

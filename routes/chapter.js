@@ -81,5 +81,35 @@ router.delete('/api/chapter/:id', (req, res) => {
     })
 })
 
+router.put('/api/chapter/updateIndex', (req, res) => {
+    const bodyObj = _.clone(req.body)
+
+    if (!bodyObj) {
+        return res.status(400).send('Request body is missing')
+    }
+
+    var isError = false
+
+    _.forEach(bodyObj, (val, key) => {
+        ChapterModel.findOneAndUpdate({
+            _id: val.id
+        }, { $set: { index: val.index } }, { upsert: true }, (err, data) => {
+            if (err) {
+                isError = true
+            }
+        })
+    })
+
+    if (isError) {
+        return res.status(500).json({
+            success: false
+        })
+    }
+
+    return res.status(200).json({
+        success: true
+    })
+})
+
 
 module.exports = router
