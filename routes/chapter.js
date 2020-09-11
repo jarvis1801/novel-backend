@@ -7,12 +7,35 @@ const moment = require('moment')
 
 
 router.post('/api/chapter', (req, res) => {
-    const bodyObj = _.clone(req.body)
+    const isString = _.isString(req.body)
+    const bodyObj = isString ? JSON.parse(req.body) : _.clone(req.body)
 
     if (!bodyObj) {
         return res.status(400).send('Request body is missing')
     }
 
+    if (bodyObj['index'] == null || bodyObj['index'] == undefined) {
+        VolumeModel.findOne({
+            _id: bodyObj.volumeId
+        }).populate('chapterList').exec().then((volume) => {
+            console.log(volume)
+            var chapterList = volume.chapterList
+            if (_.size(chapterList) > 0) {
+                bodyObj['index'] = _.maxBy(volume.chapterList, 'index').index + 1
+            } else {
+                _.set(bodyObj, 'index', 0)
+            }
+            createChapter(bodyObj, res)
+        }).catch(err => {
+            console.log(err)
+            return res.status(500).json(err)
+        })
+    } else {
+        createChapter(bodyObj, res)
+    }
+})
+
+var createChapter = (bodyObj, res) => {
     if (!_.size(bodyObj.paragraph) > 0) {
         const paragraphArray = []
         var contentStr = _.clone(bodyObj.contentToParagraph)
@@ -63,6 +86,23 @@ router.post('/api/chapter', (req, res) => {
             console.log(err)
             return res.status(500).json(err)
         })
+}
+
+router.post("/api/chapter/lastIndex", (req, res) => {
+    const bodyObj = _.clone(req.body)
+
+    if (!bodyObj) {
+        return res.status(400).send('Request body is missing')
+    }
+
+    VolumeModel.findOne({
+        _id: bodyObj.volumeId
+    }).populate('chapterList').exec().then((volume) => {
+        return res.status(200).json(_.maxBy(volume.chapterList, 'index').index + 1)
+    }).catch(err => {
+        console.log(err)
+        return res.status(500).json(err)
+    })
 })
 
 router.delete('/api/chapter/:id', (req, res) => {

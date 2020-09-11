@@ -27,7 +27,7 @@ app.all('*', function(req, res, next) {
 })
 app.use(bodyParser.urlencoded({
     limit: "50mb",
-    extended: false
+    extended: true
 }))
 app.use(bodyParser.json({ limit: "50mb" }))
 

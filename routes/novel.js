@@ -49,19 +49,13 @@ router.post('/api/novel', upload.fields([{ name: 'thumbnailMain', maxCount: 1 },
 
     if (_.size(files['thumbnailMain']) > 0) {
         if (!_.isNull(files['thumbnailMain'][0])) {
-            const thumbnailMainBase64 = base64ToString(bufferToBase64(files['thumbnailMain'][0].buffer))
-            if (_.size(thumbnailMainBase64) > 0) {
-                _.set(bodyObj, 'thumbnailMain', thumbnailMainBase64)
-            }
+            _.set(bodyObj, 'thumbnailMainBlob', files['thumbnailMain'][0].buffer.toJSON().data)
         }
     }
 
     if (_.size(files['thumbnailSection']) > 0) {
         if (!_.isNull(files['thumbnailSection'][0])) {
-            const thumbnailSectionBase64 = base64ToString(bufferToBase64(files['thumbnailSection'][0].buffer))
-            if (_.size(thumbnailSectionBase64) > 0) {
-                _.set(bodyObj, 'thumbnailSection', thumbnailSectionBase64)
-            }
+            _.set(bodyObj, 'thumbnailSectionBlob', files['thumbnailSection'][0].buffer.toJSON().data)
         }
     }
 
@@ -112,6 +106,34 @@ router.delete('/api/novel/:id', (req, res) => {
 
         return res.status(200).json({
             success: true
+        })
+    })
+})
+
+router.put('/api/novel/migrate/1', (req, res) => {
+    NovelModel.findOne({
+        _id: "5f53152cf3688c20880e17c5"
+    }, (err, data) => {
+        if (err) {
+            return res.status(500).json({
+                success: false
+            })
+        }
+
+        const saveObj = {}
+        saveObj['thumbnailMainBlob'] = data.thumbnailMainBlob
+        saveObj['thumbnailSectionBlob'] = data.thumbnailSectionBlob
+
+        NovelModel.findOneAndUpdate({
+            _id: "5f01875d0f5d6c2e2426f2f6"
+        }, { $set: saveObj }, { upsert: true, returnOriginal: false, new: true }, (err, data) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false
+                })
+            }
+
+            return res.status(200).json(data)
         })
     })
 })

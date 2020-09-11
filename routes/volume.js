@@ -14,6 +14,14 @@ router.get('/api/volumeList/:id', (req, res) => {
     })
 })
 
+router.get('/api/volume/:id', (req, res) => {
+    VolumeModel.findOne({
+        _id: req.params.id
+    }).populate('chapterList').exec().then((data) => {
+        return res.status(200).json(data)
+    })
+})
+
 router.post('/api/volume', (req, res) => {
     const bodyObj = _.clone(req.body)
 
